@@ -97,4 +97,8 @@ public class BankAccount {
     public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
     }
+
+    public double getMinimumBalance() {
+        return minBalance;
+    }
 }

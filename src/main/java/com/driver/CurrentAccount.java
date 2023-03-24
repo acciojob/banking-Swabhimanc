@@ -1,7 +1,7 @@
 package com.driver;
 
 public class CurrentAccount extends BankAccount{
-    String tradeLicenseId; //consists of Uppercase English characters only
+    static String tradeLicenseId; //consists of Uppercase English characters only
 
     public String getTradeLicenseId() {
         return tradeLicenseId;
@@ -19,29 +19,52 @@ public class CurrentAccount extends BankAccount{
 
     }
 
-    public void validateLicenseId() throws Exception {
-        // A trade license Id is said to be valid if no two consecutive characters are same
-        // If the license Id is valid, do nothing
-        // If the characters of the license Id can be rearranged to create any valid license Id
-        // If it is not possible, throw "Valid License can not be generated" Exception
+    public static void validateLicenseId() throws Exception
+    {
+        boolean isValid = true;
         char[] chars = tradeLicenseId.toCharArray();
         for (int i = 1; i < chars.length; i++) {
             if (chars[i] == chars[i - 1]) {
-                if (i == chars.length - 1) {
-                    // Last two characters are same, swap with first character
-                    char temp = chars[0];
-                    chars[0] = chars[i];
-                    chars[i] = temp;
-                } else {
-                    // Swap with next character
-                    char temp = chars[i];
-                    chars[i] = chars[i + 1];
-                    chars[i + 1] = temp;
-                }
+                isValid = false;
+                break;
             }
         }
-        tradeLicenseId = new String(chars);
-
+        if (isValid)
+        {
+            return;
+        }
+        else
+        {
+            for (int i = 0; i < chars.length - 1; i++)
+            {
+                for (int j = i + 1; j < chars.length; j++)
+                {
+                    char temp = chars[i];
+                    chars[i] = chars[j];
+                    chars[j] = temp;
+                    isValid = true;
+                    for (int k = 1; k < chars.length; k++)
+                    {
+                        if (chars[k] == chars[k - 1])
+                        {
+                            isValid = false;
+                            break;
+                        }
+                    }
+                    if (isValid)
+                    {
+                        tradeLicenseId = new String(chars);
+                        return;
+                    }
+                    else
+                    {
+                        temp = chars[i];
+                        chars[i] = chars[j];
+                        chars[j] = temp;
+                    }
+                }
+            }
+            throw new Exception("Valid License can not be generated");
+        }
     }
-
 }
