@@ -22,25 +22,36 @@ public class BankAccount {
         //Generate account number having given number of 'digits' such that the sum of digits is equal to 'sum'
         //If it is not possible, throw "Account Number can not be generated" exception
 
-        Random rand = new Random();
-        int[] nums = new int[digits];
-        int total = 0;
-
-        for (int i = 0; i < digits; i++) {
-            nums[i] = rand.nextInt(10);
-            total += nums[i];
+        if (digits <= 0 || sum < 0) {
+            throw new IllegalArgumentException("Invalid input parameters");
         }
-
-        if (total != sum) {
+        int maxDigitSum = 9 * digits;
+        if (sum > maxDigitSum) {
             throw new Exception("Account Number can not be generated");
         }
-
-        accountNumber = "";
-        for (int num : nums) {
-            accountNumber += Integer.toString(num);
+        int[] accountNumber = new int[digits];
+        int remainingSum = sum;
+        for (int i = 0; i < digits; i++) {
+            int maxDigitValue = Math.min(remainingSum, 9);
+            if (i == digits - 1) {
+                if (remainingSum == 0) {
+                    accountNumber[i] = 0;
+                } else {
+                    accountNumber[i] = remainingSum;
+                }
+            } else {
+                accountNumber[i] = (int) (Math.random() * (maxDigitValue + 1));
+            }
+            remainingSum -= accountNumber[i];
         }
-
-        return accountNumber;
+        if (remainingSum != 0) {
+            throw new Exception("Account Number can not be generated");
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < digits; i++) {
+            sb.append(accountNumber[i]);
+        }
+        return sb.toString();
     }
 
     public void deposit(double amount) {
